@@ -4,3 +4,8 @@ export enum RequestStatus {
   COMPLETED = "completed",
   REJECTED = "rejected",
 }
+
+export interface CreateItemRequest {
+  requestorName: string;
+  itemRequested: string;
+}
