@@ -50,7 +50,7 @@ export default function ItemRequestsPage() {
   }
 
   if (error) {
-    return <p>{error}</p>
+    return <p>{error}</p>;
   }
 
   async function handleStatusChange(id: string, status: RequestStatus) {
@@ -94,42 +94,58 @@ export default function ItemRequestsPage() {
     }
   }
   
+  const getTabClasses = (isActive: boolean) =>
+    `px-6 py-3 rounded-t-md ${
+      isActive ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+    }`;
+
   return (
-    <main className="w-full px-8 py-10">
-      <h1 className="mb-8 text-3xl font-bold">Item Requests</h1>
-      
-      <div className="mb-6 flex gap-2">
-        <button onClick={() => {
-          setSelectedStatus(null);
-          setCurrentPage(1);
-        }}>
-          All
-        </button>
-
-        {Object.values(RequestStatus).map((status) => (
-          <button
-            key={status}
-            onClick={() => {
-              setSelectedStatus(status);
-              setCurrentPage(1);
-            }}
-          >
-            {status}
-          </button>
-        ))}
+    <main className="m-4 overflow-hidden rounded-lg bg-white">
+      <div className="px-6 pt-6">
+        <h1 className="mb-8 text-xl font-semibold">
+          Item Requests
+        </h1>
       </div>
+      
+      <div className="overflow-x-auto">
+        <div className="flex w-max gap-1 px-6">
+          <button 
+            className={getTabClasses(selectedStatus === null)}
+            onClick={() => {
+            setSelectedStatus(null);
+            setCurrentPage(1);
+          }}>
+            All
+          </button>
 
+          {Object.values(RequestStatus).map((status) => (
+            <button
+              key={status}
+              className={getTabClasses(selectedStatus === status)}
+              onClick={() => {
+                setSelectedStatus(status);
+                setCurrentPage(1);
+              }}
+            >
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+      
       <RequestTable
         requests={requests}
         onStatusChange={handleStatusChange}
       />
 
-      <Pagination 
-        pageNumber={currentPage}
-        pageSize={PAGINATION_PAGE_SIZE}
-        totalRecords={totalRecords}
-        onPageChange={setCurrentPage}
-      />
+      <div className="flex justify-end px-4 py-3">
+        <Pagination
+          pageNumber={currentPage}
+          pageSize={PAGINATION_PAGE_SIZE}
+          totalRecords={totalRecords}
+          onPageChange={setCurrentPage}
+        />
+      </div>
     </main>
   );
  }

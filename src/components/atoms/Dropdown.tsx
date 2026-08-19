@@ -18,21 +18,25 @@ interface DropdownProps {
 export default function Dropdown({ value, onChange }: DropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
 
+    function formatStatus(status: RequestStatus): string {
+        return status.charAt(0).toUpperCase() + status.slice(1);
+    }
+
     return (
-        <div className="relative">
+        <div className="relative w-48">
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex w-full items-center justify-between rounded-md border px-3 py-2"
+                className="flex w-full items-center justify-between rounded-md border border-gray-200 px-3 py-1.5"
             >
                 <span className={`rounded-full px-2 py-1 ${statusStyles[value]}`}>
-                    ● {value}
+                    ● {formatStatus(value)}
                 </span>
-                <span>⌄</span>
+                <span>{isOpen ? "⌃" : "⌄"}</span>
             </button>
 
             {isOpen && (
-                <div className="absolute z-10 mt-1 w-full rounded-md border bg-white p-2 shadow-md">
+                <div className="absolute right-0 z-10 mt-1 w-full rounded-md border bg-white p-2 shadow-md">
                     {Object.values(RequestStatus).map((status) => (
                         <button
                             key={status}
@@ -41,10 +45,10 @@ export default function Dropdown({ value, onChange }: DropdownProps) {
                                 onChange(status);
                                 setIsOpen(false);
                             }}
-                            className="flex w-full px-2 py-1"
+                            className="flex w-full px-2 py-1 rounded hover:bg-gray-50"
                         >
-                            <span className={`rounded-full px-2 py-1 ${statusStyles[status]}`}>
-                                ● {status}
+                            <span className={`rounded-full px-2 py-1 text-sm ${statusStyles[status]}`}>
+                                ● {formatStatus(status)}
                             </span>
                         </button>
                     ))}
