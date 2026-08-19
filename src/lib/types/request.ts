@@ -14,3 +14,12 @@ export interface EditStatusRequest {
   id: string;
   status: RequestStatus;
 }
+
+export interface ItemRequest {
+  _id: string;
+  requestorName: string;
+  itemRequested: string;
+  requestCreatedDate: string;
+  lastEditedDate: string | null;
+  status: RequestStatus;
+}
