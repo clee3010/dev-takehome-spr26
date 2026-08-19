@@ -72,11 +72,22 @@ export default function ItemRequestsPage() {
 
       const updatedRequest: ItemRequest = await response.json();
 
-      setRequests((currentRequests) => 
-        currentRequests.map((request) =>
+      if (selectedStatus && selectedStatus !== updatedRequest.status) {
+        setRequests((currentRequests) =>
+          currentRequests.filter((request) =>
+            request._id !== updatedRequest._id
+          )
+        );
+
+        setTotalRecords((currentTotal) => currentTotal - 1);
+
+      } else {
+        setRequests((currentRequests) => 
+          currentRequests.map((request) =>
             request._id === updatedRequest._id ? updatedRequest : request
-        )
-      );
+          )
+        );
+      }
 
     } catch {
       setError("Unable to update request status.");
