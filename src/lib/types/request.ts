@@ -9,3 +9,8 @@ export interface CreateItemRequest {
   requestorName: string;
   itemRequested: string;
 }
+
+export interface EditStatusRequest {
+  id: string;
+  status: RequestStatus;
+}

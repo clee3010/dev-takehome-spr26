@@ -1,7 +1,7 @@
 import { ResponseType } from "@/lib/types/apiResponse";
 import { ServerResponseBuilder } from "@/lib/builders/serverResponseBuilder";
 import { InputException } from "@/lib/errors/inputExceptions";
-import { createNewRequest, getItemRequests } from "@/server/requests";
+import { createNewRequest, getItemRequests, editStatusRequest } from "@/server/requests";
 
 export async function PUT(request: Request) {
     try {
@@ -27,10 +27,11 @@ export async function PUT(request: Request) {
 
 export async function GET(request: Request) {
     const url = new URL(request.url);
+    const status = url.searchParams.get("status");
     const page = parseInt(url.searchParams.get("page") || "1");
 
     try {
-        const requests = await getItemRequests(page);
+        const requests = await getItemRequests(status, page);
 
         return new Response(JSON.stringify(requests), {
             status: 200,
@@ -38,6 +39,27 @@ export async function GET(request: Request) {
         });
 
     } catch (e) {
+
+        if (e instanceof InputException) {
+            return new ServerResponseBuilder(ResponseType.INVALID_INPUT).build();
+        }
+
+        return new ServerResponseBuilder(ResponseType.UNKNOWN_ERROR).build();
+    }
+}
+
+export async function PATCH(request: Request) {
+
+    try {
+        const req = await request.json();
+        const editedRequest = await editStatusRequest(req);
+
+        return new Response(JSON.stringify(editedRequest), {
+            status: 200,
+            headers: { "Content-Type": "application/json"},
+        });
+
+    } catch(e) {
 
         if (e instanceof InputException) {
             return new ServerResponseBuilder(ResponseType.INVALID_INPUT).build();
