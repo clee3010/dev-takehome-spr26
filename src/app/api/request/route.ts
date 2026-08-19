@@ -31,11 +31,14 @@ export async function GET(request: Request) {
     const page = parseInt(url.searchParams.get("page") || "1");
 
     try {
-        const requests = await getItemRequests(status, page);
+        const { requests, totalRecords } = await getItemRequests(status, page);
 
         return new Response(JSON.stringify(requests), {
             status: 200,
-            headers: { "Content-Type": "application/json"},
+            headers: { 
+                "Content-Type": "application/json",
+                "X-Total-Count": totalRecords.toString(),
+            },
         });
 
     } catch (e) {

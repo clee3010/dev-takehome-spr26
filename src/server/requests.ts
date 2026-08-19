@@ -41,12 +41,17 @@ export async function getItemRequests(status: string | null, page: number) {
     const skip = (page - 1) * PAGINATION_PAGE_SIZE;
     const filter = status ? { status } : {};
 
+    const totalRecords = await RequestModel.countDocuments(filter);
+
     const requests = await RequestModel.find(filter)
         .sort({ requestCreatedDate: -1})
         .skip(skip)
         .limit(PAGINATION_PAGE_SIZE);
     
-    return requests;
+    return {
+        requests,
+        totalRecords,
+    };
 }
 
 export async function editStatusRequest(request : unknown) {
